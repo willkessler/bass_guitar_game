@@ -1,0 +1,14 @@
+{
+  "name": "vexflow_fretboard",
+  "version": "1.0.0",
+  "description": "vexflow fretboard",
+  "main": "fret.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "coffeescript": "^2.7.0"
+  }
+}
