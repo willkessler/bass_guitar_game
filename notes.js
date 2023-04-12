@@ -64,3 +64,17 @@ new Formatter().joinVoices([voice]).format([voice], 350);
 // Render voice
 voice.draw(context, stave);
 
+const notes2 = [
+  new StaveNote({ keys: ["b/1"], clef: 'bass', duration: "q" }).addModifier(annotation('B'),0),
+  new StaveNote({ keys: ["c/1"], clef: 'bass', duration: "q" }).addModifier(annotation('C'),0),
+  new StaveNote({ keys: ["d/1"], clef: 'bass', duration: "q" }).addModifier(annotation('D'),0),
+  new StaveNote({ keys: ["e/1"], clef: 'bass', duration: "q" }).addModifier(annotation('E'),0),
+];
+
+//setTimeout(() => {
+//  const voice2 = new Voice({ num_beats: 4, beat_value: 4 });
+//  voice2.setStrict(false);
+//  voice2.addTickables(notes2);
+//  voice2.draw(context,stave);
+//}, 2000);
+
