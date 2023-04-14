@@ -32,6 +32,10 @@ const fretboard = {
 
   },
 
+  lookupNoteFromStringPosition: (theString, thePosition) => {
+    return this.noteLabels[theString][thePosition];
+  },
+
   drawOneFretPosition: (fret) => {
     const notes = this.noteLabels[fret.string];
     const note = notes[fret.position % 12];
@@ -118,5 +122,8 @@ fretboard.init();
 fretboard.render();
 
 setInterval( () => {
-  fretboard.render( { string: Math.floor(Math.random() * 4), position: Math.floor(Math.random() * 24) });
-}, 200);
+  const theString = Math.floor(Math.random() * 4);
+  const thePosition = Math.floor(Math.random() * 24);
+  fretboard.render( { string: theString, position: thePosition });
+  //bassSynth.playBassNote(fretboard.lookupNoteFromStringPosition(theString, thePosition));
+}, 2000);
