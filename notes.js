@@ -90,4 +90,4 @@ setInterval(() => {
   renderNotes(notes);
   bassSynth.playBassNote(newNote.toUpperCase());
 
-}, 1000);
+}, 2000);

@@ -16,9 +16,15 @@ const bassSynth = {
     }
 
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const filterNode = audioContext.createBiquadFilter();
     const gainNode = audioContext.createGain();
-    gainNode.gain.value = 0.5;
-    gainNode.connect(audioContext.destination)
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+    gainNode.connect(filterNode)
+    filterNode.connect(audioContext.destination);
+    
+    // set filter node properties
+    filterNode.type = 'lowpass';
+    filterNode.frequency.setValueAtTime(500, audioContext.currentTime);
 
     // create oscillator node
     const oscillator = audioContext.createOscillator();
@@ -64,13 +70,26 @@ const bassSynth = {
       frequency /= Math.pow(2, 1/12);
     }
   
-    // set oscillator frequency and start playing
-    //this.oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime); // set frequency to A1 (55 Hz)
-    oscillator.frequency.value = frequency * 10;
+
+    // set envelope parameters
+    const attackTime = 0.02;
+    const decayTime = 0.25;
+    const sustainLevel = 0.8;
+    const releaseTime = 0.8;
+
+    // calculate envelope values
+    const now = audioContext.currentTime;
+    gainNode.gain.cancelScheduledValues(now);
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(1, now + attackTime);
+    gainNode.gain.exponentialRampToValueAtTime(sustainLevel, now + attackTime + decayTime);
+    gainNode.gain.setTargetAtTime(0, now + attackTime + decayTime, releaseTime / 5);
+
+    oscillator.frequency.setValueAtTime(frequency * 3, audioContext.currentTime);
     oscillator.start();
   
     // stop playing after 1 second
-    oscillator.stop(audioContext.currentTime + 0.5);
+    oscillator.stop(audioContext.currentTime + 1.5);
   }
 };
 
