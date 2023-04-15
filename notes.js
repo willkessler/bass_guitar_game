@@ -80,7 +80,7 @@ setInterval(() => {
   // Create some notes
   const newNote = getRandomNote();
   let octave = Math.max(2, Math.floor(Math.random() * 3 + 1));
-  console.log(octave);
+  //console.log(octave);
 
   let notes = [
     // A quarter-note C.
@@ -88,4 +88,6 @@ setInterval(() => {
     new StaveNote({ keys: [newNote + '/' + octave], clef: 'bass', duration: "q" }).addModifier(annotation(newNote.toUpperCase()),0),
   ];
   renderNotes(notes);
+  bassSynth.playBassNote(newNote.toUpperCase());
+
 }, 1000);

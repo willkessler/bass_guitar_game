@@ -1,28 +1,30 @@
 const bassSynth = {
-  init: () => {
-    // create audio context
-    this.audioContext = new AudioContext();
+  muted: true,
 
-    // create oscillator node
-    this.oscillator = this.audioContext.createOscillator();
+  setMuted: (muteVal) => {
+    this.muted = muteVal;
+  },
 
-    // set oscillator properties
-    this.oscillator.type = 'sine';
-    this.oscillator.frequency.setValueAtTime(55, this.audioContext.currentTime); // set frequency to A1 (55 Hz)
-
-    // create gain node
-    this.gainNode = this.audioContext.createGain();
-    this.gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
-
-    // connect nodes
-    this.oscillator.connect(this.gainNode);
-    this.gainNode.connect(this.audioContext.destination);
-
-
+  toggleMuted: () => {
+    this.muted = !this.muted;
   },
 
   // play bass guitar note
   playBassNote: (note) => {
+    if (this.muted === true) {
+      return false;
+    }
+
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = 0.5;
+    gainNode.connect(audioContext.destination)
+
+    // create oscillator node
+    const oscillator = audioContext.createOscillator();
+    oscillator.type = 'sine';
+    oscillator.connect(gainNode);
+
     // lookup table of note frequencies
     const notes = {
       'C': 32.7032,
@@ -45,11 +47,17 @@ const bassSynth = {
     };
   
     // extract root note and accidental from input string
-    const rootNote = note.charAt(0);
-    const accidental = note.length > 1 ? note.charAt(1) : '';
+    const rootNote = note[0];
+    const accidental = note.length > 1 ? note[1] : '';
   
     // calculate frequency based on root note and accidental
-    let frequency = notes[rootNote];
+    let frequency = 440;
+    let noteKeys = Object.keys(notes);
+    for (let i = 0; i < noteKeys.length; ++i) {
+      if ((noteKeys[i][0] == rootNote) && noteKeys[i].length == note.length) {
+        frequency = notes[noteKeys[i]];
+      }
+    }
     if (accidental === '#') {
       frequency *= Math.pow(2, 1/12);
     } else if (accidental === 'b') {
@@ -57,16 +65,20 @@ const bassSynth = {
     }
   
     // set oscillator frequency and start playing
-    this.oscillator.start(this.audioContext.currentTime);
+    //this.oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime); // set frequency to A1 (55 Hz)
+    oscillator.frequency.value = frequency * 10;
+    oscillator.start();
   
     // stop playing after 1 second
-    this.oscillator.stop(this.audioContext.currentTime + 1);
+    oscillator.stop(audioContext.currentTime + 0.5);
   }
 };
 
 
+bassSynth.setMuted(true);
+
 document.addEventListener('click', function() {
-  bassSynth.init();
-  bassSynth.playBassNote('C');
+  console.log('Toggling mute.');
+  bassSynth.toggleMuted();
 });
 
