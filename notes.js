@@ -20,7 +20,7 @@ const renderNotes = (notes) => {
   const renderer = new Renderer(div, Renderer.Backends.SVG);
 
   // Configure the rendering context.
-  renderer.resize(1500, 200);
+  renderer.resize(1500, 300);
   const context = renderer.getContext();
 
   // Create a stave of width 400 at position 10, 40 on the canvas.
@@ -71,10 +71,35 @@ let notes = [
 ];
 
 const getRandomNote = () => {
-  let noteLetters = ['a','b','c','d','e','f','g'];
+  let noteLetters = ['A','B','C','D','E','F','G'];
   const randomIndex = Math.floor(Math.random() * noteLetters.length);
   return noteLetters[randomIndex];
 };
+
+const getNoteByIndex = (index) => {
+  let noteLetters = ['A','B','C','D','E','F','G'];
+  return noteLetters[index];
+};
+
+const runNotes = ['E','F','G','A','B','C','D','E','F','G','A','B','C','D','E','F','G'];
+const runOctaves = [0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2];
+for (let i = 0; i < runNotes.length; ++i) {
+  setTimeout(() => {
+    const theNote = runNotes[i];
+    const theOctave = runOctaves[i];
+    console.log('note index:', i, ' note:', theNote, ' octave:', theOctave);
+    let notes = [
+      // A quarter-note C.
+      // .addModifier(new Accidental("#"),0), adds sharp
+      new StaveNote({ keys: [theNote + '/' + theOctave], clef: 'bass', duration: "q" }).addModifier(annotation(theNote.toUpperCase()),0),
+    ];
+    renderNotes(notes);
+    bassSynth.playBassNote(theNote, theOctave);
+  }, 200 * (i + 1));
+}
+   
+
+/*
 
 setInterval(() => {
   // Create some notes
@@ -85,9 +110,10 @@ setInterval(() => {
   let notes = [
     // A quarter-note C.
     // .addModifier(new Accidental("#"),0), adds sharp
-    new StaveNote({ keys: [newNote + '/' + octave], clef: 'bass', duration: "q" }).addModifier(annotation(newNote.toUpperCase()),0),
+    new StaveNote({ keys: [newNote.toLowerCase() + '/' + octave], clef: 'bass', duration: "q" }).addModifier(annotation(newNote.toUpperCase()),0),
   ];
   renderNotes(notes);
-  bassSynth.playBassNote(newNote.toUpperCase());
+  bassSynth.playBassNote(newNote, octave);
 
 }, 2000);
+*/
