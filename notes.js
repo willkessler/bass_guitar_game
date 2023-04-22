@@ -81,23 +81,27 @@ const getNoteByIndex = (index) => {
   return noteLetters[index];
 };
 
-const runNotes = ['E','F','G','A','B','C','D','E','F','G','A','B','C','D','E','F','G'];
+// octave changes happen at C.
+const runNotes = ['C','D','E','F','G','A','B'];
 const runOctaves = [0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2];
-for (let i = 0; i < runNotes.length; ++i) {
-  setTimeout(() => {
-    const theNote = runNotes[i];
-    const theOctave = runOctaves[i];
-    console.log('note index:', i, ' note:', theNote, ' octave:', theOctave);
-    let notes = [
-      // A quarter-note C.
-      // .addModifier(new Accidental("#"),0), adds sharp
-      new StaveNote({ keys: [theNote + '/' + theOctave], clef: 'bass', duration: "q" }).addModifier(annotation(theNote.toUpperCase()),0),
-    ];
-    renderNotes(notes);
-    bassSynth.playBassNote(theNote, theOctave);
-  }, 200 * (i + 1));
-}
-   
+const startOctave = 2;
+const endOctave = 5;
+let counter = 1;
+for (let theOctave = startOctave; theOctave < endOctave; ++theOctave) {
+  for (let theNote of runNotes) {
+    counter++;
+    setTimeout(() => {
+      console.log(' note:', theNote, ' octave:', theOctave);
+      let notes = [
+        // A quarter-note C.
+        // .addModifier(new Accidental("#"),0), adds sharp
+        new StaveNote({ keys: [theNote + '/' + theOctave], clef: 'bass', duration: "q" }).addModifier(annotation(theNote.toUpperCase() + theOctave),0),
+      ];
+      renderNotes(notes);
+      bassSynth.playBassNote(theNote, theOctave);
+    }, 200 * counter);
+  }
+}   
 
 /*
 
